@@ -1,0 +1,71 @@
+<?xml version="1.0" ?>
+<experiment boot="kollaps:2.0">
+	<services>
+		<service name="dashboard" image="kollaps/dashboard:1.0" supervisor="true" port="8088"/>
+		<service name="capetown" image="kollaps/dp:1.0" replicas="6" share="false"/>
+		<service name="tokyo" image="kollaps/dp:1.0" replicas="6" share="false"/>
+		<service name="mumbai" image="kollaps/dp:1.0" replicas="6" share="false"/>
+		<service name="sydney" image="kollaps/dp:1.0" replicas="6" share="false"/>
+		<service name="stockholm" image="kollaps/dp:1.0" replicas="6" share="false"/>
+		<service name="milan" image="kollaps/dp:1.0" replicas="6" share="false"/>
+		<service name="bahrain" image="kollaps/dp:1.0" replicas="6" share="false"/>
+		<service name="saopaulo" image="kollaps/dp:1.0" replicas="6" share="false"/>
+		<service name="ohio" image="kollaps/dp:1.0" replicas="6" share="false"/>
+		<service name="oregon" image="kollaps/dp:1.0" replicas="6" share="false"/>
+	</services>
+	<links>
+		<link origin="capetown" dest="tokyo" latency="1" upload="26Mbps" download="26Mbps" drop="0" network="kollaps_network"/>
+		<link origin="capetown" dest="mumbai" latency="1" upload="36Mbps" download="36Mbps" drop="0" network="kollaps_network"/>
+		<link origin="capetown" dest="sydney" latency="1" upload="21Mbps" download="21Mbps" drop="0" network="kollaps_network"/>
+		<link origin="capetown" dest="stockholm" latency="1" upload="60Mbps" download="60Mbps" drop="0" network="kollaps_network"/>
+		<link origin="capetown" dest="milan" latency="1" upload="67Mbps" download="67Mbps" drop="0" network="kollaps_network"/>
+		<link origin="capetown" dest="bahrain" latency="1" upload="34Mbps" download="34Mbps" drop="0" network="kollaps_network"/>
+		<link origin="capetown" dest="saopaulo" latency="1" upload="27Mbps" download="27Mbps" drop="0" network="kollaps_network"/>
+		<link origin="capetown" dest="ohio" latency="1" upload="44Mbps" download="44Mbps" drop="0" network="kollaps_network"/>
+		<link origin="capetown" dest="oregon" latency="1" upload="36Mbps" download="36Mbps" drop="0" network="kollaps_network"/>
+
+		<link origin="tokyo" dest="mumbai" latency="1" upload="89Mbps" download="89Mbps" drop="0" network="kollaps_network"/>
+		<link origin="tokyo" dest="sydney" latency="1" upload="112Mbps" download="112Mbps" drop="0" network="kollaps_network"/>
+		<link origin="tokyo" dest="stockholm" latency="1" upload="42Mbps" download="42Mbps" drop="0" network="kollaps_network"/>
+		<link origin="tokyo" dest="milan" latency="1" upload="48Mbps" download="48Mbps" drop="0" network="kollaps_network"/>
+		<link origin="tokyo" dest="bahrain" latency="1" upload="67Mbps" download="67Mbps" drop="0" network="kollaps_network"/>
+		<link origin="tokyo" dest="saopaulo" latency="1" upload="39Mbps" download="39Mbps" drop="0" network="kollaps_network"/>
+		<link origin="tokyo" dest="ohio" latency="1" upload="86Mbps" download="86Mbps" drop="0" network="kollaps_network"/>
+		<link origin="tokyo" dest="oregon" latency="1" upload="109Mbps" download="109Mbps" drop="0" network="kollaps_network"/>
+
+		<link origin="mumbai" dest="sydney" latency="1" upload="76Mbps" download="76Mbps" drop="0" network="kollaps_network"/>
+		<link origin="mumbai" dest="stockholm" latency="1" upload="81Mbps" download="81Mbps" drop="0" network="kollaps_network"/>
+		<link origin="mumbai" dest="milan" latency="1" upload="103Mbps" download="103Mbps" drop="0" network="kollaps_network"/>
+		<link origin="mumbai" dest="bahrain" latency="1" upload="336Mbps" download="336Mbps" drop="0" network="kollaps_network"/>
+		<link origin="mumbai" dest="saopaulo" latency="1" upload="31Mbps" download="31Mbps" drop="0" network="kollaps_network"/>
+		<link origin="mumbai" dest="ohio" latency="1" upload="53Mbps" download="53Mbps" drop="0" network="kollaps_network"/>
+		<link origin="mumbai" dest="oregon" latency="1" upload="49Mbps" download="49Mbps" drop="0" network="kollaps_network"/>
+
+		<link origin="sydney" dest="stockholm" latency="1" upload="32Mbps" download="32Mbps" drop="0" network="kollaps_network"/>
+		<link origin="sydney" dest="milan" latency="1" upload="42Mbps" download="42Mbps" drop="0" network="kollaps_network"/>
+		<link origin="sydney" dest="bahrain" latency="1" upload="60Mbps" download="60Mbps" drop="0" network="kollaps_network"/>
+		<link origin="sydney" dest="saopaulo" latency="1" upload="31Mbps" download="31Mbps" drop="0" network="kollaps_network"/>
+		<link origin="sydney" dest="ohio" latency="1" upload="57Mbps" download="57Mbps" drop="0" network="kollaps_network"/>
+		<link origin="sydney" dest="oregon" latency="1" upload="81Mbps" download="81Mbps" drop="0" network="kollaps_network"/>
+
+		<link origin="stockholm" dest="milan" latency="1" upload="405Mbps" download="405Mbps" drop="0" network="kollaps_network"/>
+		<link origin="stockholm" dest="bahrain" latency="1" upload="82Mbps" download="82Mbps" drop="0" network="kollaps_network"/>
+		<link origin="stockholm" dest="saopaulo" latency="1" upload="48Mbps" download="48Mbps" drop="0" network="kollaps_network"/>
+		<link origin="stockholm" dest="ohio" latency="1" upload="95Mbps" download="95Mbps" drop="0" network="kollaps_network"/>
+		<link origin="stockholm" dest="oregon" latency="1" upload="68Mbps" download="68Mbps" drop="0" network="kollaps_network"/>
+
+		<link origin="milan" dest="bahrain" latency="1" upload="106Mbps" download="106Mbps" drop="0" network="kollaps_network"/>
+		<link origin="milan" dest="saopaulo" latency="1" upload="49Mbps" download="49Mbps" drop="0" network="kollaps_network"/>
+		<link origin="milan" dest="ohio" latency="1" upload="105Mbps" download="105Mbps" drop="0" network="kollaps_network"/>
+		<link origin="milan" dest="oregon" latency="1" upload="70Mbps" download="70Mbps" drop="0" network="kollaps_network"/>
+
+		<link origin="bahrain" dest="saopaulo" latency="1" upload="30Mbps" download="30Mbps" drop="0" network="kollaps_network"/>
+		<link origin="bahrain" dest="ohio" latency="1" upload="49Mbps" download="49Mbps" drop="0" network="kollaps_network"/>
+		<link origin="bahrain" dest="oregon" latency="1" upload="39Mbps" download="39Mbps" drop="0" network="kollaps_network"/>
+
+		<link origin="saopaulo" dest="ohio" latency="1" upload="92Mbps" download="92Mbps" drop="0" network="kollaps_network"/>
+		<link origin="saopaulo" dest="oregon" latency="1" upload="61Mbps" download="61Mbps" drop="0" network="kollaps_network"/>
+
+		<link origin="ohio" dest="oregon" latency="1" upload="105Mbps" download="105Mbps" drop="0" network="kollaps_network"/>
+	</links>
+</experiment>

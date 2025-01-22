@@ -1,0 +1,66 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.env
+.venv
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+
+# IDEs and editors
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Ignore logs and Docker files
+docker_logs/
+shatter/
+Kollaps/
+
+# In topologies, only include example files
+topologies/*
+!topologies/example_topology_*
+
+# In scripts, only include example files 
+scripts/*
+!scripts/example_*
+!scripts/pre_runner.py
+
+# In async-dp/tutorial/, only include example files
+async-dp/tutorial/*
+!async-dp/tutorial/example_*
+
+# In async-dp/src/asyncNodes, include necessary files
+async-dp/src/asyncNodes/node/*
+!async-dp/src/asyncNodes/node/DivShare.py
+!async-dp/src/asyncNodes/node/Node.py
+async-dp/src/asyncNodes/sharing/*
+!async-dp/src/asyncNodes/sharing/DivShareSharing.py
+!async-dp/src/asyncNodes/sharing/Sharing.py

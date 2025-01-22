@@ -1,0 +1,27 @@
+<?xml version="1.0" ?>
+<experiment boot="kollaps:2.0">
+	<services>
+		<service name="dashboard" image="kollaps/dashboard:1.0" supervisor="true" port="8088"/>
+		<service name="fastWorker" image="kollaps/dp:1.0" replicas="53" share="false"/>
+		<service name="slowWorker0" image="kollaps/dp:1.0" replicas="1" share="false"/>
+		<service name="slowWorker1" image="kollaps/dp:1.0" replicas="1" share="false"/>
+		<service name="slowWorker2" image="kollaps/dp:1.0" replicas="1" share="false"/>
+		<service name="slowWorker3" image="kollaps/dp:1.0" replicas="1" share="false"/>
+		<service name="slowWorker4" image="kollaps/dp:1.0" replicas="1" share="false"/>
+		<service name="slowWorker5" image="kollaps/dp:1.0" replicas="1" share="false"/>
+		<service name="slowWorker6" image="kollaps/dp:1.0" replicas="1" share="false"/>
+	</services>
+	<bridges>
+		<bridge name="switch"/>
+	</bridges>
+	<links>
+		<link origin="fastWorker" dest="switch" latency="1" upload="60Mbps" download="60Mbps" drop="0" network="kollaps_network"/>
+		<link origin="slowWorker0" dest="switch" latency="1" upload="12Mbps" download="12Mbps" drop="0" network="kollaps_network"/>
+		<link origin="slowWorker1" dest="switch" latency="1" upload="12Mbps" download="12Mbps" drop="0" network="kollaps_network"/>
+		<link origin="slowWorker2" dest="switch" latency="1" upload="12Mbps" download="12Mbps" drop="0" network="kollaps_network"/>
+		<link origin="slowWorker3" dest="switch" latency="1" upload="13Mbps" download="13Mbps" drop="0" network="kollaps_network"/>
+		<link origin="slowWorker4" dest="switch" latency="1" upload="10Mbps" download="10Mbps" drop="0" network="kollaps_network"/>
+		<link origin="slowWorker5" dest="switch" latency="1" upload="13Mbps" download="13Mbps" drop="0" network="kollaps_network"/>
+		<link origin="slowWorker6" dest="switch" latency="1" upload="11Mbps" download="11Mbps" drop="0" network="kollaps_network"/>
+	</links>
+</experiment>
