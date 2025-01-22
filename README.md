@@ -42,6 +42,7 @@ This guide explains how the deployment and distributed deep learning training pi
    - The DL training is managed through the `async-dp/tutorial` script.
      - It reads configurations from `async-dp/tutorial`.
      - It uses classes stored in `async-dp/src/` to define the DL algorithm and its behavior.
+      - By default, the script `async-dp/tutorial/example_run` launches DivShare. To test baselines, modify `eval_file` in the script.
 
 ---
 

@@ -3,6 +3,7 @@
 graph=/async-dp/tutorial/example_fullyConnected_60.edges
 config_file=/async-dp/tutorial/example_config.ini
 run_path=/results # Path to the folder where the graph and config file will be copied and the results will be stored
+eval_file=/async-dp/tutorial/example_testingDivShare.py # decentralized driver code (run on each machine)
 
 # If run_path does not exist, create it
 if [ ! -d "$run_path" ]; then
@@ -13,7 +14,6 @@ env_python=python3
 machines=60 # number of machines/containers in the runtime
 iterations=1000 # number of iterations
 test_after=10
-eval_file=/async-dp/tutorial/example_testingDivShare.py # decentralized driver code (run on each machine)
 log_level=INFO # DEBUG | INFO | WARN | CRITICAL
 procs_per_machine=1
 

@@ -60,6 +60,8 @@ async-dp/tutorial/*
 # In async-dp/src/asyncNodes, include necessary files
 async-dp/src/asyncNodes/node/*
 !async-dp/src/asyncNodes/node/DivShare.py
+!async-dp/src/asyncNodes/node/ADPSGD.py
+!async-dp/src/asyncNodes/node/Swift.py
 !async-dp/src/asyncNodes/node/Node.py
 async-dp/src/asyncNodes/sharing/*
 !async-dp/src/asyncNodes/sharing/DivShareSharing.py
