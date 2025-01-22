@@ -1,4 +1,10 @@
-# Setup - Install Dependencies
+# DivShare
+Repository for the artifact of *[Boosting Asynchronous Decentralized Learning with Model Fragmentation](https://arxiv.org/pdf/2410.12918)* published at The ACM Web Conference (WWW) 2025.
+
+Decentralized learning (DL) is an emerging technique that allows nodes on the web to collaboratively train machine learning models without sharing raw data. Dealing with stragglers, i.e., nodes with slower compute or communication than others, is a key challenge in DL. We present DivShare, a novel asynchronous DL algorithm that achieves fast model convergence in the presence of communication stragglers. DivShare achieves this by having nodes fragment their models into parameter subsets and send, in parallel to computation, each subset to a random sample of other nodes instead of sequentially exchanging full models. The transfer of smaller fragments allows more efficient usage of the collective bandwidth and enables nodes with slow network links to quickly contribute with at least some of their model parameters. By theoretically proving the convergence of DivShare, we provide, to the best of our knowledge, the first formal proof of convergence for a DL algorithm that accounts for the effects of asynchronous communication with delays. We experimentally evaluate DivShare against two state-of-the-art DL baselines, AD-PSGD and Swift, and with two standard datasets, CIFAR-10 and MovieLens. We find that DivShare with communication stragglers lowers time-to-accuracy by up to 3.9x compared to AD-PSGD on the CIFAR-10 dataset. Compared to baselines, DivShare also achieves up to 19.4% better accuracy and 9.5% lower test loss on the CIFAR-10 and MovieLens datasets, respectively.
+ 
+
+## Setup - Install Dependencies
 
 1. **Decentralizepy**: Follow the instructions at [Decentralizepy GitHub](https://github.com/sacs-epfl/decentralizepy) to install the package for simulating distributed learning (DL) algorithms.
 
@@ -9,11 +15,11 @@
     pip3 install --editable .
     ```
 
-# Deployment and Training Workflow
+## Deployment and Training Workflow
 
 This guide explains how the deployment and distributed deep learning training pipeline works, step by step, including a diagram for better understanding. Please refer to each mentioned files to modify them and reproduce or make your own experiments. 
 
-## Step-by-Step Workflow
+### Step-by-Step Workflow
 
 1. **Initialize Deployment Script**
    - The process starts with `scripts/example_deploy.py`.
@@ -46,7 +52,7 @@ This guide explains how the deployment and distributed deep learning training pi
 
 ---
 
-## System Diagram
+### System Diagram
 
 ```mermaid
 graph TD
@@ -61,20 +67,23 @@ graph TD
 
 This diagram visualizes the flow of the system, starting from deployment initialization to the execution of deep learning training on the Docker nodes.
 
-# Citing
+## Citation
 
-Cite us as : (DOI from ACM WWW not released yet)
-
-@misc{biswas2024boostingasynchronousdecentralizedlearning,
-      title={Boosting Asynchronous Decentralized Learning with Model Fragmentation}, 
-      author={Sayan Biswas and Anne-Marie Kermarrec and Alexis Marouani and Rafael Pires and Rishi Sharma and Martijn De Vos},
-      year={2024},
-      eprint={2410.12918},
-      archivePrefix={arXiv},
-      primaryClass={cs.DC},
-      url={https://arxiv.org/abs/2410.12918}, 
+Cite us as :
+```
+@inproceedings{biswas2025boosting,
+  title={Boosting Asynchronous Decentralized Learning with Model Fragmentation},
+  author={Biswas, Sayan and Kermarrec, Anne-Marie and Marouani, Alexis and Pires, Rafael and Sharma, Rishi and de Vos, Martijn},
+  booktitle={Proceedings of the ACM on Web Conference (WWW)},
+  year={2025},
+  url={https://arxiv.org/abs/2410.12918}
 }
+```
 
-# Contact
+## Contact us
 
-Code written by Alexis Marouani in 2024
+For any questions or concerns, please feel free to create a Github issue on the repository.
+
+## License
+
+Artifact contributed by [Alexis Marouani](https://github.com/Alexyyym). This project is licensed under the MIT License. See the `LICENSE` file for more details.
