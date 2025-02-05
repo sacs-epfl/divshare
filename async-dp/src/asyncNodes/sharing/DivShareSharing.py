@@ -1,4 +1,5 @@
 import logging
+
 import torch
 
 from asyncNodes.sharing.Sharing import Sharing
@@ -75,7 +76,9 @@ class ChunkSharingRandom(Sharing):
         # instantiate a torch generator
         self.random_indices = None
 
-    def serialized_models(self, chunk_fraction=1, sparsity=0.0, training_iteration=None):
+    def serialized_models(
+        self, chunk_fraction=1, sparsity=0.0, training_iteration=None
+    ):
         """
         Convert model to a dictionary. Here we can choose how much to share
 
@@ -273,9 +276,9 @@ class ChunkSharingRandom(Sharing):
                 logging.debug("Deserialized model from neighbor {}".format(sender))
                 self.current_sum[indices] += deserializedT.to(self.device)
                 self.current_weights[indices] += 1
-                
+
             del model_queue[sender]
-        
+
         assert self.current_sum != None
         assert self.current_weights != None
 
@@ -289,9 +292,12 @@ class ChunkSharingRandom(Sharing):
         self.current_weights = None
         self.current_sum = None
 
-    def get_data_to_send(self, chunk_fraction=1, degree=None, sparsity=0.0, training_iteration=None):
+    def get_data_to_send(
+        self, chunk_fraction=1, degree=None, sparsity=0.0, training_iteration=None
+    ):
         self._pre_step()
         return self.serialized_models(
-            chunk_fraction=chunk_fraction, sparsity=sparsity, training_iteration=training_iteration
+            chunk_fraction=chunk_fraction,
+            sparsity=sparsity,
+            training_iteration=training_iteration,
         )
-

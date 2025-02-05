@@ -161,7 +161,7 @@ class TCP(Communication):
             neighbor to connect to
 
         linger : int
-            Time to wait before closing the socket and discard messages 
+            Time to wait before closing the socket and discard messages
             -1 : infinite
             0 : discard immediately
             > 0 : wait for that many milliseconds

@@ -5,10 +5,10 @@ from shutil import copy
 from localconfig import LocalConfig
 from torch import multiprocessing as mp
 
+from asyncNodes.node.Swift import Swift
 from decentralizepy import utils
 from decentralizepy.graphs.Graph import Graph
 from decentralizepy.mappings.Linear import Linear
-from asyncNodes.node.Swift import Swift
 
 
 def read_ini(file_path):

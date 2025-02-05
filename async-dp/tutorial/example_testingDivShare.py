@@ -5,10 +5,10 @@ from shutil import copy
 from localconfig import LocalConfig
 from torch import multiprocessing as mp
 
+from asyncNodes.node.DivShare import DivShare
 from decentralizepy import utils
 from decentralizepy.graphs.Graph import Graph
 from decentralizepy.mappings.Linear import Linear
-from asyncNodes.node.DivShare import DivShare
 
 
 def read_ini(file_path):

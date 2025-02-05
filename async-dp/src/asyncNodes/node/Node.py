@@ -221,7 +221,6 @@ class Node:
 
         if "device" in config["TRAIN_PARAMS"]:
             self.model.to(config["TRAIN_PARAMS"]["device"])
-            
 
     def init_optimizer(self, optimizer_configs):
         """

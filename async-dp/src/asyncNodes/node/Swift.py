@@ -1,26 +1,25 @@
+import csv
 import importlib
 import json
 import logging
 import math
 import os
-import random 
+import random
+import shutil
 import threading
-import csv 
-import numpy as np
 from collections import deque
+from datetime import datetime
 from random import Random
 from time import perf_counter
-from datetime import datetime
-import shutil
 
-
+import numpy as np
 import torch
 from matplotlib import pyplot as plt
 
+from asyncNodes.node.Node import Node
 from decentralizepy import utils
 from decentralizepy.graphs.Graph import Graph
 from decentralizepy.mappings.Mapping import Mapping
-from asyncNodes.node.Node import Node
 
 
 class Swift(Node):
@@ -31,7 +30,7 @@ class Swift(Node):
 
     def get_neighbors(self, node=None):
         return set(self.rng.sample(list(self.my_neighbors), self.degree))
-    
+
     def receive_and_queue(self):
         """
         Function that runs in parallel with training (main thread).
@@ -40,9 +39,9 @@ class Swift(Node):
         If receives multiple models from the same neighbor, only the latest one is stored
         """
 
-        while(True):
+        while True:
 
-            if self.stopper.is_set():    #main thread finished training
+            if self.stopper.is_set():  # main thread finished training
                 logging.debug("receiver-thread: out of loop")
                 break
 
@@ -55,7 +54,7 @@ class Swift(Node):
 
                 if data["CHANNEL"] == "model":
 
-                    self.receiver_pauser.wait() #pause if aggregation is ongoing
+                    self.receiver_pauser.wait()  # pause if aggregation is ongoing
 
                     if not sender in self.in_queue:
                         self.in_queue[sender] = []
@@ -67,12 +66,16 @@ class Swift(Node):
                     start_index_new = data["start_index"]
                     sparsity_new = data["sparsity"]
                     random_generation_seed_new = data["random_generation_seed"]
-                    
+
                     for i, chunk in enumerate(self.in_queue[sender]):
                         start_index = chunk["start_index"]
                         sparsity = chunk["sparsity"]
                         random_generation_seed = chunk["random_generation_seed"]
-                        if start_index == start_index_new and sparsity == sparsity_new and random_generation_seed == random_generation_seed_new:
+                        if (
+                            start_index == start_index_new
+                            and sparsity == sparsity_new
+                            and random_generation_seed == random_generation_seed_new
+                        ):
                             self.in_queue[sender][i] = data
                             existing = True
                             break
@@ -85,32 +88,34 @@ class Swift(Node):
                         "Received Model from {} of iteration {}".format(
                             sender, data["iteration"]
                         )
-                    )        
+                    )
 
-            except (TypeError, ValueError):   #in case of timeout
-                continue   
+            except (TypeError, ValueError):  # in case of timeout
+                continue
 
         logging.info("receiver-thread: finished")
-    
+
     def queue_and_send(self):
         """
         Function that runs in parallel with training (main thread).
         Sends chunks of model to neighbors
         """
 
-        while(True):
+        while True:
             if self.stopper.is_set():
                 logging.debug("sender-thread: out of loop")
                 break
-            
+
             if len(self.out_queue) == 0:
-                self.sender_pauser.clear() # Set pauser to false, meaning no sending 
+                self.sender_pauser.clear()  # Set pauser to false, meaning no sending
                 while not self.sender_pauser.is_set() and not self.stopper.is_set():
-                    self.sender_pauser.wait(timeout=10.0) # If queue is empty, pause until new data is available
-            else :
+                    self.sender_pauser.wait(
+                        timeout=10.0
+                    )  # If queue is empty, pause until new data is available
+            else:
                 # Get a neigh and a chunk of model to send
                 neighbor, chunk = self.out_queue.pop(0)
-                self.sender_pauser.wait() # Pause if aggregation is ongoing
+                self.sender_pauser.wait()  # Pause if aggregation is ongoing
                 self.communication.send(neighbor, chunk)
                 self.msg_sent += 1
                 logging.info(
@@ -136,9 +141,9 @@ class Swift(Node):
 
         self.stopper = threading.Event()
         self.sender_pauser = threading.Event()
-        self.sender_pauser.set() # Start sending
+        self.sender_pauser.set()  # Start sending
         self.receiver_pauser = threading.Event()
-        self.receiver_pauser.set() # Start receiving
+        self.receiver_pauser.set()  # Start receiving
         init_time = perf_counter()
 
         # Connect to neighbors
@@ -147,14 +152,18 @@ class Swift(Node):
 
         logging.info("Total number of neighbor: {}".format(len(self.my_neighbors)))
 
-        logging.info("Node should sent {} chunks to {} neighbors".format(int(1/self.chunk_fraction), self.degree))
+        logging.info(
+            "Node should sent {} chunks to {} neighbors".format(
+                int(1 / self.chunk_fraction), self.degree
+            )
+        )
 
-        #create thread for receiving neighbors' models
+        # create thread for receiving neighbors' models
         receiver_thread = threading.Thread(target=self.receive_and_queue)
         logging.debug("Receiver thread created")
         receiver_thread.start()
 
-        #create thread for sending chunks of model to neighbors
+        # create thread for sending chunks of model to neighbors
         sender_thread = threading.Thread(target=self.queue_and_send)
         logging.debug("Sender thread created")
         sender_thread.start()
@@ -169,8 +178,10 @@ class Swift(Node):
                 self.stopper.set()
                 break
 
-            # Local Phase : Train 
-            logging.info("Starting training iteration: %d out of %d", iteration, self.iterations)
+            # Local Phase : Train
+            logging.info(
+                "Starting training iteration: %d out of %d", iteration, self.iterations
+            )
             rounds_to_train_evaluate -= 1
             rounds_to_test -= 1
 
@@ -181,12 +192,14 @@ class Swift(Node):
             self.cpu_time_train += end - start
 
             # Send Phase : replace queue with new data
-            self.sender_pauser.clear() # Pause sending
+            self.sender_pauser.clear()  # Pause sending
             logging.debug("Pausing sender and updating queue")
 
             self.out_queue_to_add = []
-            
-            for chunk in self.sharing.get_data_to_send(chunk_fraction=self.chunk_fraction, training_iteration=iteration):
+
+            for chunk in self.sharing.get_data_to_send(
+                chunk_fraction=self.chunk_fraction, training_iteration=iteration
+            ):
                 for neighbor in self.get_neighbors():
                     self.out_queue_to_add.append((neighbor, chunk))
 
@@ -197,12 +210,17 @@ class Swift(Node):
 
             # Aggregation Phase
             self.msg_aggr += self.received
-            self.received_percentage = self.received / (self.degree * int(1/self.chunk_fraction))
+            self.received_percentage = self.received / (
+                self.degree * int(1 / self.chunk_fraction)
+            )
             if self.received == 0:
                 logging.info("No response received this round")
             else:
-                self.receiver_pauser.clear() # Pause receiving
-                logging.info("Pausing receiver and starting aggregation with %d chunks", self.received)
+                self.receiver_pauser.clear()  # Pause receiving
+                logging.info(
+                    "Pausing receiver and starting aggregation with %d chunks",
+                    self.received,
+                )
                 self.sharing.plain_avg_received_queue(self.in_queue)
                 if len(self.in_queue) > 0:
                     logging.debug("Be careful, queue not empty")
@@ -241,7 +259,9 @@ class Swift(Node):
                     "received_this_round": {},
                 }
 
-            results_dict["received_percentage"][iteration + 1] = self.received_percentage
+            results_dict["received_percentage"][
+                iteration + 1
+            ] = self.received_percentage
 
             if rounds_to_train_evaluate == 0:
                 logging.info("Evaluating on train set.")
@@ -250,34 +270,44 @@ class Swift(Node):
                 results_dict["train_loss"][iteration + 1] = loss_after_sharing
 
             if self.dataset.__testing__ and rounds_to_test == 0:
-                    
+
                 rounds_to_test = self.test_after
                 results_dict["time_acc"][iteration + 1] = perf_counter() - init_time
 
                 if self.eval_on_test_set:
-                
+
                     logging.info("Evaluating on test set.")
-                    ta, tl = self.dataset.test(self.model, self.loss, self.trainer.device)
+                    ta, tl = self.dataset.test(
+                        self.model, self.loss, self.trainer.device
+                    )
                     results_dict["test_acc"][iteration + 1] = ta
                     results_dict["test_loss"][iteration + 1] = tl
 
                 else:
-                    
+
                     logging.info("Saving model to test later.")
                     if not os.path.exists(os.path.join(self.log_dir, "models")):
                         os.makedirs(os.path.join(self.log_dir, "models"), exist_ok=True)
 
-                    torch.save(self.model.state_dict(), os.path.join(self.log_dir, "models/{}_model_{}_iter.pt".format(self.uid, iteration+1)))
-                
+                    torch.save(
+                        self.model.state_dict(),
+                        os.path.join(
+                            self.log_dir,
+                            "models/{}_model_{}_iter.pt".format(
+                                self.uid, iteration + 1
+                            ),
+                        ),
+                    )
+
                 if global_epoch == 49:
-                        change *= 2
+                    change *= 2
                 global_epoch += change
 
             with open(
                 os.path.join(self.log_dir, "{}_results.json".format(self.rank)), "w"
             ) as of:
                 json.dump(results_dict, of)
-            
+
             if self.model.shared_parameters_counter is not None:
                 logging.info("Saving the shared parameter counts")
                 with open(
@@ -288,11 +318,10 @@ class Swift(Node):
                 ) as of:
                     json.dump(self.model.shared_parameters_counter.numpy().tolist(), of)
 
-            self.sender_pauser.set() # Resume sending
+            self.sender_pauser.set()  # Resume sending
             logging.debug("Resuming sender")
-            self.receiver_pauser.set() # Resume receiving
+            self.receiver_pauser.set()  # Resume receiving
             logging.debug("Resuming receiver")
-
 
         self.stopper.set()
 
@@ -307,25 +336,37 @@ class Swift(Node):
             model_files = [f for f in model_files if f.endswith(".pt")]
             for file in model_files:
                 logging.info("Now reading %s", file)
-                self.model.load_state_dict(torch.load(os.path.join(self.weights_store_dir, "models", file)))
+                self.model.load_state_dict(
+                    torch.load(os.path.join(self.weights_store_dir, "models", file))
+                )
                 self.model.eval()
                 ta, tl = self.dataset.test(self.model, self.loss, self.trainer.device)
-                file_name = file.split('_')
+                file_name = file.split("_")
                 iteration = file_name[2]
                 test_eval["test_acc"][iteration] = ta
                 test_eval["test_loss"][iteration] = tl
-            
-            # Order the dictionaries by iteration
-            test_eval["test_acc"] = {k:v for k,v in sorted(test_eval["test_acc"].items(), key=lambda item: int(item[0]))}
-            test_eval["test_loss"] = {k:v for k,v in sorted(test_eval["test_loss"].items(), key=lambda item: int(item[0]))}
 
-            with open(
-                os.path.join(self.log_dir, "0_testset_results.json"), "w"
-            ) as of:
+            # Order the dictionaries by iteration
+            test_eval["test_acc"] = {
+                k: v
+                for k, v in sorted(
+                    test_eval["test_acc"].items(), key=lambda item: int(item[0])
+                )
+            }
+            test_eval["test_loss"] = {
+                k: v
+                for k, v in sorted(
+                    test_eval["test_loss"].items(), key=lambda item: int(item[0])
+                )
+            }
+
+            with open(os.path.join(self.log_dir, "0_testset_results.json"), "w") as of:
                 json.dump(test_eval, of)
             logging.info("Test results saved")
 
-        logging.info("Neighbors not disconnected because docker will shut down everything. Process complete!")
+        logging.info(
+            "Neighbors not disconnected because docker will shut down everything. Process complete!"
+        )
 
     def cache_fields(
         self,
@@ -338,7 +379,7 @@ class Swift(Node):
         weights_store_dir,
         test_after,
         train_evaluate_after,
-        reset_optimizer
+        reset_optimizer,
     ):
         """
         Instantiate object field with arguments.
@@ -466,7 +507,7 @@ class Swift(Node):
             weights_store_dir,
             test_after,
             train_evaluate_after,
-            reset_optimizer
+            reset_optimizer,
         )
         self.init_dataset_model(config, dataset_seed)
         self.init_optimizer(config["OPTIMIZER_PARAMS"])
@@ -505,9 +546,12 @@ class Swift(Node):
         self.cpu_time_train = 0
         self.gradient_steps = 0
 
-        self.stats = {"msg_sent": {}, "msg_aggr": {}, "cpu_time_train": {}, "gradient_steps": {}}
-
-
+        self.stats = {
+            "msg_sent": {},
+            "msg_aggr": {},
+            "cpu_time_train": {},
+            "gradient_steps": {},
+        }
 
     def __init__(
         self,
@@ -578,10 +622,12 @@ class Swift(Node):
 
         total_threads = os.cpu_count()
 
-        if config["NODE"]["threads_per_proc"] :
+        if config["NODE"]["threads_per_proc"]:
             self.threads_per_proc = config["NODE"]["threads_per_proc"]
         else:
-            self.threads_per_proc = max(math.floor(total_threads / mapping.procs_per_machine), 1)
+            self.threads_per_proc = max(
+                math.floor(total_threads / mapping.procs_per_machine), 1
+            )
         torch.set_num_threads(self.threads_per_proc)
         torch.set_num_interop_threads(1)
         self.instantiate(

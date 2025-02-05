@@ -138,7 +138,7 @@ class Shakespeare(Dataset):
     ):
         self.test_batch_size = test_batch_size
         self.test_dir = test_dir
-        
+
         self.load_testset()
 
     def process(self, x):

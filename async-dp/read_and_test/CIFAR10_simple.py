@@ -4,7 +4,6 @@ import torch
 import torch.nn.functional as F
 import torchvision
 import torchvision.transforms as transforms
-
 from torch import nn
 from torch.utils.data import DataLoader
 
@@ -13,12 +12,11 @@ from decentralizepy.models.Model import Model
 NUM_CLASSES = 10
 
 
-class CIFAR10():
+class CIFAR10:
     """
     Class for the FEMNIST dataset
 
     """
-
 
     def load_testset(self):
         """
@@ -34,7 +32,7 @@ class CIFAR10():
     def __init__(
         self,
     ):
-       
+
         self.test_batch_size = 1024
         self.test_dir = "/CIFAR"
         self.num_classes = NUM_CLASSES
@@ -47,8 +45,6 @@ class CIFAR10():
 
         self.load_testset()
 
-
-    
     def get_testset(self):
         """
         Function to get the test set
@@ -123,9 +119,6 @@ class CIFAR10():
         return accuracy, loss_val
 
 
-
-
-
 class LeNet(Model):
     """
     Class for a LeNet Model for CIFAR10
@@ -170,4 +163,3 @@ class LeNet(Model):
         x = torch.flatten(x, 1)
         x = self.fc1(x)
         return x
-

@@ -20,7 +20,7 @@ class Sharing:
         model,
         dataset,
         log_dir,
-        device = "cpu",
+        device="cpu",
         compress=False,
         compression_package=None,
         compression_class=None,

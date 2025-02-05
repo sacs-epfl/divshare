@@ -78,7 +78,9 @@ class MovieLens(Dataset):
         self.test_x = self.test_data[["user_id", "item_id"]].to_numpy()
         self.test_y = self.test_data.rating.values.astype("float32")
 
-        self.test_set = DataLoader(Data(self.test_x, self.test_y), batch_size=self.test_batch_size)
+        self.test_set = DataLoader(
+            Data(self.test_x, self.test_y), batch_size=self.test_batch_size
+        )
 
         # [0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0]
         # [0,   1,   2,   3,   4,   5,   6,   7,   8,   9  ]

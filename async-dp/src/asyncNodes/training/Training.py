@@ -24,7 +24,7 @@ class Training:
         full_epochs="",
         batch_size="",
         shuffle="",
-        device=""
+        device="",
     ):
         """
         Constructor
